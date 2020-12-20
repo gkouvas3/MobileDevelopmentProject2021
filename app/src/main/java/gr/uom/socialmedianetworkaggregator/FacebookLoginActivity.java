@@ -127,7 +127,8 @@ public class FacebookLoginActivity extends AppCompatActivity {
                         }
                 ).executeAsync();
 
-
+                FbInstaUSer user = new FbInstaUSer(AccessToken.getCurrentAccessToken());
+                Log.d(TAG, "Fb id : "+user.getFacebookId());
 
 
 
