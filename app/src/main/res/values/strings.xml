@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Social Media Network Aggregator</string>
+
+    <string name="facebook_app_id">200755704911190</string>
+    <string name="fb_login_protocol_scheme">fb200755704911190</string>
+
+</resources>
