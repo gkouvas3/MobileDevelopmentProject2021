@@ -1,9 +1,15 @@
 package gr.uom.socialmedianetworkaggregator;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+
 import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
 import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 
@@ -21,6 +27,144 @@ public class FbInstaUSer {
 
     private String facebookPageId;
 
+
+
+    public FbInstaUSer(AccessToken accessToken) throws InterruptedException {
+        this.accessToken = accessToken;
+        this.facebookId=accessToken.getUserId();
+
+        setUserName();
+        setFacebookPageId();
+        setInstagramId();
+    }
+
+
+    private void setInstagramId() throws InterruptedException{
+        GraphRequest.Callback callback = new GraphRequest.Callback() {
+            @Override
+            public void onCompleted(GraphResponse response) {
+                // Insert your code here
+                try {
+                    instagramId = response.getJSONObject().getJSONObject("instagram_business_account").getString("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+        };
+
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/"+facebookPageId+"/",
+                callback
+        );
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "instagram_business_account");
+        request.setParameters(parameters);
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GraphResponse gResponse = request.executeAndWait();
+            }
+        });
+
+        t.start();
+        t.join();
+    }
+
+
+    private void setUserName() throws InterruptedException{
+
+        GraphRequest.Callback callback = new GraphRequest.Callback() {
+            @Override
+            public void onCompleted(GraphResponse response) {
+                // Insert your code here
+                try {
+                    userName = response.getJSONObject().getString("name");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+        };
+
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/"+AccessToken.getCurrentAccessToken().getUserId(),
+                callback
+        );
+
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GraphResponse gResponse = request.executeAndWait();
+            }
+        });
+
+        t.start();
+        t.join();
+
+    }
+
+     private void setFacebookPageId() throws InterruptedException {
+
+         GraphRequest.Callback callback = new GraphRequest.Callback() {
+             @Override
+             public void onCompleted(GraphResponse response) {
+                 // Insert your code here
+
+
+                 try {
+                     facebookPageId = response.getJSONObject().getJSONArray("data").getJSONObject(0).getString("id");
+
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+
+             }
+
+
+         };
+
+
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/"+AccessToken.getCurrentAccessToken().getUserId()+"/accounts",
+                callback
+                );
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id");
+        request.setParameters(parameters);
+
+         Thread t = new Thread(new Runnable() {
+             @Override
+             public void run() {
+                 GraphResponse gResponse = request.executeAndWait();
+             }
+         });
+
+         t.start();
+         t.join();
+
+    }
+
+
+    public String getUserName(){
+        return this.userName;
+    }
+
+    public String getFacebookPageId() {
+        return  facebookPageId;
+    }
+
     public String getFacebookId() {
         return facebookId;
     }
@@ -29,63 +173,4 @@ public class FbInstaUSer {
         return instagramId;
     }
 
-    public FbInstaUSer(AccessToken accessToken) {
-        this.accessToken = accessToken;
-        this.facebookId=accessToken.getUserId();
-
-
-        /*
-        //setUserName
-        new GraphRequest(
-                this.accessToken,
-                "/"+facebookId+"/",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        try {
-                            Log.d(TAG,"Graph Request to getUserName");
-                            //name = response.getJSONObject().getString("name");
-                           userName =response.getJSONObject().getString("name");
-                           Log.d(TAG,"User Name - Constractor FbInstaUser :"+userName);
-
-                        } catch (JSONException e) {
-                            Log.d(TAG, "Graph request exception to get user name"+e.toString());
-                        }
-                    }
-                }
-        ).executeAndWait();
-
-
-        //set instagramId
-        new GraphRequest(
-                accessToken,
-                "/" + facebookId + "/accounts",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-
-                        try {
-                            facebookPageId =response.getJSONObject().getJSONArray("data").getJSONObject(1).getString("id");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-        ).executeAsync();
-
-
-         */
-    }
-
-    public String getUserName(){
-        return this.userName;
-    }
-
-    public String getFacebookPageId() {
-        return facebookPageId;
-    }
 }

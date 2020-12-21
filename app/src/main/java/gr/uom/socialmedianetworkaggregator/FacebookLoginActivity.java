@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.DrawableContainer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,14 +35,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class FacebookLoginActivity extends AppCompatActivity {
 
     private TextView loginTextView;
     private ImageView profileImageView;
+    private ImageView instagramProfileImageView;
     private LoginButton loginButton;
 
     private AccessToken accessToken;
@@ -61,13 +65,55 @@ public class FacebookLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_social_media_login);
 
         loginTextView = findViewById(R.id.loginTextView);
-        profileImageView = findViewById(R.id.profileImageViewe);
+        profileImageView = findViewById(R.id.profileImageView);
+        instagramProfileImageView = findViewById(R.id.profileImageView2);
         loginButton = findViewById(R.id.login_button);
 
         
         Log.d(TAG, "Making callback manager");
 
         callbackManager = CallbackManager.Factory.create();
+
+        loginButton.setPermissions(Arrays.asList("user_birthday",
+        "user_hometown",
+        "user_location",
+        "user_likes",
+        "user_events",
+        "user_photos",
+        "user_videos",
+        "user_friends",
+        "user_status",
+        "user_tagged_places",
+        "user_posts",
+        "user_gender",
+        "user_link",
+        "user_age_range",
+        "email",
+        "read_insights",
+        "publish_video",
+        "catalog_management",
+        "create_audience_network_applications",
+        "user_managed_groups",
+        "groups_show_list",
+        "pages_manage_cta",
+        "pages_manage_instant_articles",
+        "pages_show_list",
+        "read_page_mailboxes",
+        "pages_messaging",
+        "pages_messaging_phone_number",
+        "pages_messaging_subscriptions",
+        "instagram_basic",
+        "instagram_manage_comments",
+        "instagram_manage_insights",
+        "publish_to_groups",
+        "groups_access_member_info",
+        "leads_retrieval",
+        "pages_read_engagement",
+        "pages_manage_metadata",
+        "pages_read_user_content",
+        "pages_manage_ads",
+        "pages_manage_posts",
+        "pages_manage_engagement"));
 
         Log.d(TAG, "register callback");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -78,27 +124,17 @@ public class FacebookLoginActivity extends AppCompatActivity {
 
                 accessToken=loginResult.getAccessToken();
 
-                Log.d(TAG,"Permissions: "+AccessToken.getCurrentAccessToken().getPermissions().toString());
+
+                FbInstaUSer newUser = null;
+                try {
+                    newUser = new FbInstaUSer(AccessToken.getCurrentAccessToken());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                loginTextView.setText("Hello "+ newUser.getUserName());
 
 
-                new GraphRequest(
-                        loginResult.getAccessToken(),
-                        "/"+loginResult.getAccessToken().getUserId()+"/",
-                        null,
-                        HttpMethod.GET,
-                        new GraphRequest.Callback() {
-                            @Override
-                            public void onCompleted(GraphResponse response) {
-                                try {
-                                    //name = response.getJSONObject().getString("name");
-                                    loginTextView.setText("Hello "+response.getJSONObject().getString("name"));
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                ).executeAsync();
 
 
 
@@ -112,7 +148,7 @@ public class FacebookLoginActivity extends AppCompatActivity {
 
                 new GraphRequest(
                         AccessToken.getCurrentAccessToken(),
-                        "me/picture",
+                        newUser.getFacebookId()+"/picture",
                         params,
                         HttpMethod.GET,
                         new GraphRequest.Callback() {
@@ -127,8 +163,23 @@ public class FacebookLoginActivity extends AppCompatActivity {
                         }
                 ).executeAsync();
 
-                FbInstaUSer user = new FbInstaUSer(AccessToken.getCurrentAccessToken());
-                Log.d(TAG, "Fb id : "+user.getFacebookId());
+                new GraphRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        newUser.getInstagramId()+"?fields=profile_picture_url",
+                        params,
+                        HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            public void onCompleted(GraphResponse response) {
+                                try {
+                                    String picUrlString = response.getJSONObject().getString("profile_picture_url");
+                                    Picasso.get().load(picUrlString).into(instagramProfileImageView);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                ).executeAsync();
+
 
 
 
@@ -163,6 +214,7 @@ public class FacebookLoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode,data);
+
     }
 
 }
