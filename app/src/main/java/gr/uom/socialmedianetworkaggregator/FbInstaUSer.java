@@ -173,4 +173,7 @@ public class FbInstaUSer {
         return instagramId;
     }
 
+    public AccessToken getAccessToken() {
+        return accessToken;
+    }
 }

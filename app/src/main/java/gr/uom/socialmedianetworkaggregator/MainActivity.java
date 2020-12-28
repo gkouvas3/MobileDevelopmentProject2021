@@ -16,16 +16,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = findViewById(R.id.button);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        Button socialMediaLoginBtn = findViewById(R.id.socialMediaLoginBtn);
+
+        socialMediaLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FacebookLoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, SocialMediaLoginActivity.class);
 
-                Log.d(TAG,"Starting Activity 2");
+                Log.d(TAG,"Starting Social Media Login  Activity");
                 startActivity(intent);
             }
         });
+
+
     }
 }

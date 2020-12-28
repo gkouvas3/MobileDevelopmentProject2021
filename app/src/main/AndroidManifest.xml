@@ -11,8 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SocialMediaNetworkAggregator">
-        <activity android:name=".PostAtSocialMediaActivity"></activity>
-        <activity android:name=".FacebookLoginActivity" />
+        <activity android:name=".MainMenuActivity"></activity>
+        <activity android:name=".TwitterLoginActivity" />
+        <activity android:name=".SocialMediaLoginActivity" />
+        <activity android:name=".PostAtSocialMediaActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
