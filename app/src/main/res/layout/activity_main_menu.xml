@@ -7,12 +7,64 @@
     tools:context=".MainMenuActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/headerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Main Menu"
+        android:text="Choose An Action"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/searchPostsButton"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:text="Search Posts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerTextView" />
+
+    <Button
+        android:id="@+id/createPostButton"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:text="Create A Post"
+        app:layout_constraintBottom_toBottomOf="@+id/searchPostsButton"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/createStoryButton"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="Create A Story"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchPostsButton" />
+
+    <Button
+        android:id="@+id/logOutButton"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:text="Log Out"
+        app:layout_constraintBottom_toBottomOf="@+id/createStoryButton"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="183dp"
+        android:layout_height="144dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/allmynetworks_logo_round" />
 </androidx.constraintlayout.widget.ConstraintLayout>

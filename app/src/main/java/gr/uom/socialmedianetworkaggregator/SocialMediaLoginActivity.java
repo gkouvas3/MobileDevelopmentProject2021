@@ -47,12 +47,17 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
         twitterBtn = findViewById(R.id.twitterBtn);
         goToMenuBtn = findViewById(R.id.goToMenuButton);
         goToMenuBtn.setVisibility(View.INVISIBLE);
+        if(fbInstaUser!=null && twitterUser!=null){
+            AppUser.setTwitterUser(twitterUser);
+            AppUser.setFbInstaUSer(fbInstaUser);
+            goToMenuBtn.setVisibility(View.VISIBLE);
+
+        }
         goToMenuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SocialMediaLoginActivity.this,MainMenuActivity.class);
-                intent.putExtra("fbAccessToken",fbInstaUser.getAccessToken());
-                intent.putExtra("twitterBearerToken",twitterUser.getBearerToken());
+                //intent.putExtra("twitterBearerToken",twitterUser.getBearerToken());
                 startActivity(intent);
             }
         });
@@ -89,6 +94,8 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
                                         twitterUser= new TwitterUser(oAuthCredential.getAccessToken());
 
                                         if(fbInstaUser!=null && twitterUser!=null){
+                                            AppUser.setTwitterUser(twitterUser);
+                                            AppUser.setFbInstaUSer(fbInstaUser);
                                             goToMenuBtn.setVisibility(View.VISIBLE);
                                         }
 
@@ -187,6 +194,11 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = fbAuth.getCurrentUser();
         if(currentUser!=null){
+            if(fbInstaUser!=null && twitterUser!=null){
+                AppUser.setTwitterUser(twitterUser);
+                AppUser.setFbInstaUSer(fbInstaUser);
+                goToMenuBtn.setVisibility(View.VISIBLE);
+            }
             updateUI(currentUser);
         }
     }
@@ -230,6 +242,8 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
             //if user is logged in , redirect him to another activity
             Toast.makeText(this, "Successful sign in", Toast.LENGTH_SHORT).show();
             if(fbInstaUser!=null && twitterUser!=null){
+                AppUser.setTwitterUser(twitterUser);
+                AppUser.setFbInstaUSer(fbInstaUser);
                 goToMenuBtn.setVisibility(View.VISIBLE);
             }
 
