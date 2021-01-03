@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.androidnetworking.AndroidNetworking;
+
 public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "Thanos";
@@ -15,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AndroidNetworking.initialize(getApplicationContext());
 
 
         Button socialMediaLoginBtn = findViewById(R.id.socialMediaLoginBtn);

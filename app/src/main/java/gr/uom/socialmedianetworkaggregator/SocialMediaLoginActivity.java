@@ -89,9 +89,10 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
                                         // authResult.getCredential().getSecret().
 
 
+
                                         OAuthCredential oAuthCredential = (OAuthCredential) authResult.getCredential();
-                                        Log.d(TAG, "onSuccess Bearer "+oAuthCredential.getAccessToken());
-                                        twitterUser= new TwitterUser(oAuthCredential.getAccessToken());
+                                        Log.d(TAG, "onSuccess Bearer "+  oAuthCredential.getSecret());
+                                        twitterUser= new TwitterUser(oAuthCredential.getAccessToken(), oAuthCredential.getSecret());
 
                                         if(fbInstaUser!=null && twitterUser!=null){
                                             AppUser.setTwitterUser(twitterUser);

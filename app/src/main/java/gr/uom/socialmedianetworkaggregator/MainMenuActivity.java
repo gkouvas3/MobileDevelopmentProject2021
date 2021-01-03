@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookContentProvider;
 
 public class MainMenuActivity extends AppCompatActivity {
 
@@ -26,7 +27,7 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
 
-        Log.d(TAG, "get fb id: "+ AppUser.getFbInstaUSer().getFacebookId());
+        Log.d(TAG, "get fb id: "+ AppUser.getFbInstaUSer().getInstagramId());
         Log.d(TAG, "Get twitter bearer: "+AppUser.getTwitterUser().getBearerToken());
 
         searchPostsButton = findViewById(R.id.searchPostsButton);
