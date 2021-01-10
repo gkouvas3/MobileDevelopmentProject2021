@@ -157,6 +157,26 @@ public class FbInstaUSer {
     }
 
 
+//    public void searchInstaPostsByHashtag(String hashtags){
+//        GraphRequest request = GraphRequest.newGraphPathRequest(
+//                accessToken,
+//                "/17841593698074073/top_media",
+//                new GraphRequest.Callback() {
+//                    @Override
+//                    public void onCompleted(GraphResponse response) {
+//                        // Insert your code here
+//                    }
+//                });
+//
+//        Bundle parameters = new Bundle();
+//        parameters.putString("fields", "media_type,caption,media_url,permalink,comments_count,like_count");
+//        parameters.putString("user_id", "17841445327420605");
+//        request.setParameters(parameters);
+//        request.executeAsync();
+//    }
+
+
+
     public String getUserName(){
         return this.userName;
     }

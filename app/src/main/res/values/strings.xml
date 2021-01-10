@@ -4,7 +4,5 @@
     <string name="facebook_app_id">200755704911190</string>
     <string name="fb_login_protocol_scheme">fb200755704911190</string>
 
-    <string name="com.twitter.sdk.android.CONSUMER_KEY">UA0RjRV585BOUQHnem9BZru2s</string>
-    <string name="com.twitter.sdk.android.CONSUMER_SECRET">OrriCRmz82Y9UJPgplXyNisoiYkQKgxrnpHppCXuJg2DX0ULS4</string>
 
 </resources>

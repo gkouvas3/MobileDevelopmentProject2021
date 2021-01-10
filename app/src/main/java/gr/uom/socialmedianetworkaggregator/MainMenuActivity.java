@@ -8,9 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.facebook.AccessToken;
-import com.facebook.FacebookContentProvider;
-
 public class MainMenuActivity extends AppCompatActivity {
 
     private static final String TAG = "Thanos";
@@ -28,7 +25,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
         Log.d(TAG, "get fb id: "+ AppUser.getFbInstaUSer().getInstagramId());
-        Log.d(TAG, "Get twitter bearer: "+AppUser.getTwitterUser().getBearerToken());
+        Log.d(TAG, "Get twitter bearer: "+AppUser.getTwitterUser().getAccessToken());
 
         searchPostsButton = findViewById(R.id.searchPostsButton);
         createPostButton = findViewById(R.id.createPostButton);
