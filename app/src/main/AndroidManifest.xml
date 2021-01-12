@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SocialMediaNetworkAggregator">
         <activity android:name=".LogOutActivity"></activity>
-        <activity android:name=".SearchPostsActivity" />
+        <activity android:name=".SearchPostsActivity.SearchPostsActivity" />
         <activity android:name=".CreateStoryActivity" />
         <activity android:name=".MainMenuActivity" />
         <activity android:name=".SocialMediaLoginActivity" />

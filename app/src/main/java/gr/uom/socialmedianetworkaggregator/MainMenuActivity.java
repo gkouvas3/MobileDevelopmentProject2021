@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import gr.uom.socialmedianetworkaggregator.SearchPostsActivity.SearchPostsActivity;
+
 public class MainMenuActivity extends AppCompatActivity {
 
     private static final String TAG = "Thanos";

@@ -37,6 +37,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import gr.uom.socialmedianetworkaggregator.SearchPostsActivity.TwitterPostEntry;
+
 public class TwitterUser {
     private static final String TAG = "Thanos" ;
     private String consumerToken;
@@ -207,8 +209,56 @@ public class TwitterUser {
         return oauthHeader;
     }
 
-    public List<String> getTweetsByHashtag(String hashtag) throws UnsupportedEncodingException, GeneralSecurityException, JSONException {
-        List<String> tweetsUrls = new ArrayList<>();
+//    public List<String> getTweetsByHashtag(String hashtag) throws UnsupportedEncodingException, GeneralSecurityException, JSONException {
+//        List<String> tweetsUrls = new ArrayList<>();
+//        String url = "https://api.twitter.com/1.1/search/tweets.json";
+//        Map<String, String> params = new HashMap<>();
+//        params.put("result_type","popular");
+//        if(hashtag.contains("#")) hashtag=hashtag.substring(1);
+//        params.put("q",hashtag);
+//        String headerString=generateOauthHeaders("GET",url, params);
+//
+//        Log.d(TAG, "HeaderString: "+headerString);
+//        ANRequest request =AndroidNetworking.get(url+"?result_type=popular&q="+hashtag)
+//                .addHeaders("Authorization", headerString)
+//                .build();
+//
+//        Log.d(TAG,"Request: "+request.getHeaders().toString());
+//        ANResponse<JSONObject> response = request.executeForJSONObject();
+//
+//        if(response.isSuccess()){
+//
+//            Log.d(TAG,"Before getting result as JSONArray: "+response.getResult().toString());
+//            JSONObject result = response.getResult();
+//            Log.d(TAG,"getTweetsByHashtag result:"+result.toString());
+//
+//            JSONArray statuses = result.getJSONArray("statuses");
+//
+//            Log.d(TAG,"Statuses JSONArray:"+statuses.toString());
+//            Log.d(TAG,"One of statuses :"+statuses.getJSONObject(0).toString());
+//
+//            for(int i=0; i<statuses.length();i++) {
+//
+//                for (int j = 0; j < statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").length(); j++) {
+//                    tweetsUrls.add(statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").getJSONObject(j).getString("url"));
+//
+//                }
+//                //tweetsUrls.add(statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").toString());
+//            }
+//
+//            Log.d(TAG, "Tweets by hashtag tweetsUrls: "+tweetsUrls.toString());
+//
+//
+//        }else Log.d(TAG,"Tweets by hashtag Error: "+response.getError().getErrorDetail() + " "+response.getError().getErrorCode() + " "+ response.getError().getErrorBody() + " "+response.getError().getMessage() );
+//
+//
+//
+//        return tweetsUrls;
+//    }
+
+
+    public List<TwitterPostEntry> getTweetsByHashtag(String hashtag) throws UnsupportedEncodingException, GeneralSecurityException, JSONException {
+        List<TwitterPostEntry> tweets = new ArrayList<>();
         String url = "https://api.twitter.com/1.1/search/tweets.json";
         Map<String, String> params = new HashMap<>();
         params.put("result_type","popular");
@@ -235,22 +285,40 @@ public class TwitterUser {
             Log.d(TAG,"Statuses JSONArray:"+statuses.toString());
             Log.d(TAG,"One of statuses :"+statuses.getJSONObject(0).toString());
 
-            for(int i=0; i<statuses.length();i++) {
+//            for(int i=0; i<statuses.length();i++) {
+//
+//                for (int j = 0; j < statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").length(); j++) {
+//                    tweets.add(statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").getJSONObject(j).getString("url"));
+//
+//                }
+//                //tweetsUrls.add(statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").toString());
+//            }
 
+            for(int i=0;i<statuses.length();i++){
+                String username;
+                String description;
+                String tweetUrl=null;
+
+                username="@"+statuses.getJSONObject(i).getJSONObject("user").getString("screen_name");
+                description=statuses.getJSONObject(i).getString("text");
                 for (int j = 0; j < statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").length(); j++) {
-                    tweetsUrls.add(statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").getJSONObject(j).getString("url"));
-
+                    tweetUrl = statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").getJSONObject(j).getString("url");
                 }
-                //tweetsUrls.add(statuses.getJSONObject(i).getJSONObject("entities").getJSONArray("urls").toString());
+                tweets.add(new TwitterPostEntry(username,description,tweetUrl));
+
+
             }
 
-            Log.d(TAG, "Tweets by hashtag tweetsUrls: "+tweetsUrls.toString());
+
+
+
+            Log.d(TAG, "Tweets by hashtag : "+tweets.toString());
 
 
         }else Log.d(TAG,"Tweets by hashtag Error: "+response.getError().getErrorDetail() + " "+response.getError().getErrorCode() + " "+ response.getError().getErrorBody() + " "+response.getError().getMessage() );
 
 
 
-        return tweetsUrls;
+        return tweets;
     }
 }

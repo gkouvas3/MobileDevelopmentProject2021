@@ -17,6 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gr.uom.socialmedianetworkaggregator.SearchPostsActivity.InstaPostEntry;
+
 public class FbInstaUSer {
     private String TAG="Thanos";
 
@@ -157,24 +162,98 @@ public class FbInstaUSer {
     }
 
 
-//    public void searchInstaPostsByHashtag(String hashtags){
-//        GraphRequest request = GraphRequest.newGraphPathRequest(
-//                accessToken,
-//                "/17841593698074073/top_media",
-//                new GraphRequest.Callback() {
-//                    @Override
-//                    public void onCompleted(GraphResponse response) {
-//                        // Insert your code here
-//                    }
-//                });
-//
-//        Bundle parameters = new Bundle();
-//        parameters.putString("fields", "media_type,caption,media_url,permalink,comments_count,like_count");
-//        parameters.putString("user_id", "17841445327420605");
-//        request.setParameters(parameters);
-//        request.executeAsync();
-//    }
+    public List<InstaPostEntry> getInstaPostsByHashtag(String hashtag) throws InterruptedException {
+        List<InstaPostEntry> posts = new ArrayList<InstaPostEntry>();
 
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                accessToken,
+                "/"+this.getHashtagId(hashtag)+"/top_media",
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+
+                        Log.d(TAG,"FbInstaUser getInstaPosts complete, response: "+response.toString());
+                        // Insert your code here
+                        try {
+                            JSONArray data = response.getJSONObject().getJSONArray("data");
+                            for(int i=0;i<data.length();i++){
+                                String caption;
+                                String mediaUrl;
+                                String url;
+
+                                caption=data.getJSONObject(i).getString("caption");
+                                mediaUrl=data.getJSONObject(i).getString("media_url");
+                                url=data.getJSONObject(i).getString("permalink");
+
+                                InstaPostEntry instaPostEntry = new InstaPostEntry("InstagramUser",caption,url);
+                                instaPostEntry.setInstaMediaUrl(mediaUrl);
+                                posts.add(instaPostEntry);
+                            }
+                        } catch (JSONException e) {
+                            Log.d(TAG,"FbInstaUser getInstaPostsByHashtag json error "+e.toString());
+                        }
+
+                    }
+
+
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("user_id", this.instagramId);
+        parameters.putString("fields", "caption,media_url,permalink");
+        request.setParameters(parameters);
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GraphResponse gResponse = request.executeAndWait();
+            }
+        });
+
+        t.start();
+        t.join();
+
+        return posts;
+    }
+
+    private String getHashtagId(String hashtag) throws InterruptedException {
+        final String[] id = new String[1];
+
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                accessToken,
+                "/ig_hashtag_search",
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+
+                        Log.d(TAG, "FbInstaUser getHashtagId complete, response: "+response.toString());
+                        // Insert your code here
+                        try {
+                            id[0] =response.getJSONObject().getJSONArray("data").getJSONObject(0).getString("id");
+                        } catch (JSONException e) {
+                            Log.d(TAG, "Hashtag id json error"+e.toString());
+                        }
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("user_id", this.instagramId);
+        if(hashtag.contains("#")) hashtag=hashtag.substring(1);
+        parameters.putString("q", hashtag);
+        request.setParameters(parameters);
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GraphResponse gResponse = request.executeAndWait();
+            }
+        });
+
+        t.start();
+        t.join();
+        Log.d(TAG,"hashtag id:"+id[0]);
+        return id[0];
+    }
 
 
     public String getUserName(){
