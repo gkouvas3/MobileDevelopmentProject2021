@@ -1,7 +1,6 @@
-package gr.uom.socialmedianetworkaggregator;
+package gr.uom.socialmedianetworkaggregator.SearchPostsActivity;
 
 import android.content.Context;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +15,16 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ViewPostsListAdapter extends ArrayAdapter<TwitterPostEntry> {
+import gr.uom.socialmedianetworkaggregator.R;
 
-    private List<TwitterPostEntry> dataset;
+public class ViewPostsListAdapter extends ArrayAdapter<PostsListEntry> {
+
+    private List<PostsListEntry> dataset;
     private final LayoutInflater inflater;
     private final int layoutResource;
 
 
-    public ViewPostsListAdapter(@NonNull Context context, int resource, List<TwitterPostEntry> objects) {
+    public ViewPostsListAdapter(@NonNull Context context, int resource, List<PostsListEntry> objects) {
         super(context, resource, objects);
 
         dataset = objects;
@@ -31,14 +32,14 @@ public class ViewPostsListAdapter extends ArrayAdapter<TwitterPostEntry> {
         layoutResource = resource;
     }
 
-    public TwitterPostEntry getPostsListEntry(int position){
+    public PostsListEntry getPostsListEntry(int position){
         if(position < dataset.size() ){
             return dataset.get(position);
         }
-        return new TwitterPostEntry(null,null,null);
+        return new PostsListEntry(null,null,null);
     }
 
-    public void setNewsEntries(@NonNull List<TwitterPostEntry> newsEntries) {
+    public void setNewsEntries(@NonNull List<PostsListEntry> newsEntries) {
         dataset = newsEntries;
         notifyDataSetChanged();
     }
@@ -48,11 +49,13 @@ public class ViewPostsListAdapter extends ArrayAdapter<TwitterPostEntry> {
         public TextView usernameTextView;
         public TextView descriptionTextView;
         public ImageView imageView;
+        public ImageView instaMediaView;
 
         public PostsViewHolder(View itemView) {
             usernameTextView = itemView.findViewById(R.id.userNameText);
             descriptionTextView = itemView.findViewById(R.id.descriptionText);
             imageView = itemView.findViewById(R.id.socialMediaIcon);
+            instaMediaView=itemView.findViewById(R.id.instaMediaImage);
         }
     }
 
@@ -68,13 +71,14 @@ public class ViewPostsListAdapter extends ArrayAdapter<TwitterPostEntry> {
             holder = (PostsViewHolder)convertView.getTag();
         }
 
-        TwitterPostEntry postsListEntry = dataset.get(position);
+        PostsListEntry postsListEntry = dataset.get(position);
         holder.usernameTextView.setText(postsListEntry.getUsername());
-        //na thimithw na to kanw description
-        holder.descriptionTextView.setText(postsListEntry.getUrl());
+        holder.descriptionTextView.setText(postsListEntry.getDescription());
         holder.imageView.setImageResource(postsListEntry.getSocialMediaIcon());
-        //Picasso.get().load(postsListEntry.getUrlToImage()).into(holder.imageView);
-
+        if(postsListEntry.isInstaPost()) {
+            holder.instaMediaView.setVisibility(View.VISIBLE);
+            Picasso.get().load(postsListEntry.getInstaMediaUrl()).into(holder.instaMediaView);
+        }
         return convertView;
     }
 

@@ -1,4 +1,4 @@
-package gr.uom.socialmedianetworkaggregator;
+package gr.uom.socialmedianetworkaggregator.SearchPostsActivity;
 
 import android.os.Bundle;
 
@@ -21,6 +21,9 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
+
+import gr.uom.socialmedianetworkaggregator.AppUser;
+import gr.uom.socialmedianetworkaggregator.R;
 
 
 public class hashtagsListFragment extends Fragment {

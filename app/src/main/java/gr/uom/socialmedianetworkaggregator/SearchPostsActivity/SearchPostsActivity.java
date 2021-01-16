@@ -1,4 +1,4 @@
-package gr.uom.socialmedianetworkaggregator;
+package gr.uom.socialmedianetworkaggregator.SearchPostsActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -7,13 +7,9 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SearchView;
 
-import java.util.List;
+import gr.uom.socialmedianetworkaggregator.R;
 
 public class SearchPostsActivity extends AppCompatActivity {
 

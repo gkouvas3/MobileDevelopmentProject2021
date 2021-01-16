@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.OAuthCredential;
 import com.google.firebase.auth.OAuthProvider;
@@ -321,4 +323,36 @@ public class TwitterUser {
 
         return tweets;
     }
+
+    public void createPost(String description, String imageUri) throws UnsupportedEncodingException, GeneralSecurityException {
+        Log.d(TAG, "TwitterUser createPost");
+        if(description!=null){
+
+            Log.d(TAG,"description is not null: "+description);
+
+            String url = "https://api.twitter.com/1.1/statuses/update.json";
+            Map<String, String> params = new HashMap<>();
+            params.put("status", description);
+            String headerString=generateOauthHeaders("POST",url, params);
+
+            AndroidNetworking.post(url+"?status="+URLEncoder.encode(description,String.valueOf(StandardCharsets.UTF_8)))
+                    .addHeaders("Authorization",headerString)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG,"Successful tweet!");
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            Log.d(TAG, "Error while twitter createpost: "+anError.getErrorDetail()+" "+anError.getMessage());
+                        }
+                    });
+        }
+
+
+    }
+
+
 }

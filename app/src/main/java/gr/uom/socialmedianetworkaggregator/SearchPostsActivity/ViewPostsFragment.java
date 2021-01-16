@@ -1,4 +1,4 @@
-package gr.uom.socialmedianetworkaggregator;
+package gr.uom.socialmedianetworkaggregator.SearchPostsActivity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,9 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import org.json.JSONException;
@@ -23,12 +21,16 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
+import gr.uom.socialmedianetworkaggregator.AppUser;
+import gr.uom.socialmedianetworkaggregator.R;
+
 
 public class ViewPostsFragment extends Fragment {
 
     public static final String TAG="Thanos";
     private String hashtagText;
-    private List<String> tweetsUrls;
+    private List<TwitterPostEntry> tweets;
+    private List<InstaPostEntry> instaPosts;
     private ListView postsListView;
     private View view;
     //private EditText hashtagEditText;
@@ -49,8 +51,8 @@ public class ViewPostsFragment extends Fragment {
 
         try {
 
-            tweetsUrls =AppUser.getTwitterUser().getTweetsByHashtag(hashtagText);
-            Log.d(TAG,"ViewPostsFragment getTweets"+ tweetsUrls.toString());
+            tweets = AppUser.getTwitterUser().getTweetsByHashtag(hashtagText);
+            Log.d(TAG,"ViewPostsFragment getTweets"+ tweets.toString());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
@@ -59,11 +61,24 @@ public class ViewPostsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        List<TwitterPostEntry> postsList = new ArrayList<TwitterPostEntry>();
 
-        for(String url : tweetsUrls){
-            Log.d(TAG,"Tweet "+url);
-            postsList.add(new TwitterPostEntry(null, null, url));
+        try {
+            instaPosts = AppUser.getFbInstaUSer().getInstaPostsByHashtag(hashtagText);
+            Log.d(TAG,"ViewPostsFragment getInstaPosts "+instaPosts.toString());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        List<PostsListEntry> postsList = new ArrayList<PostsListEntry>();
+
+        for(TwitterPostEntry tweet : tweets){
+            //Log.d(TAG,"Tweet "+url);
+            postsList.add(new TwitterPostEntry(tweet.getUsername(), tweet.getDescription(), tweet.getUrl()));
+        }
+
+        for(InstaPostEntry post : instaPosts){
+            postsList.add(new InstaPostEntry(post.getUsername(),post.getDescription(),post.getUrl()));
         }
 
         ViewPostsListAdapter adapter = new ViewPostsListAdapter(this.view.getContext(), R.layout.posts_list_item, postsList);
@@ -72,7 +87,7 @@ public class ViewPostsFragment extends Fragment {
         postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TwitterPostEntry postsListEntry = adapter.getPostsListEntry(position);
+                PostsListEntry postsListEntry = adapter.getPostsListEntry(position);
                 String url = postsListEntry.getUrl();
 
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));

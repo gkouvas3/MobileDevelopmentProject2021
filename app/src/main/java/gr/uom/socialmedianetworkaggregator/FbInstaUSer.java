@@ -255,6 +255,17 @@ public class FbInstaUSer {
         return id[0];
     }
 
+    public void createFbPost(String description, String imageUri){
+
+    }
+
+    public void createInstaPost(String description, String imageUri){
+
+    }
+
+
+
+
 
     public String getUserName(){
         return this.userName;
