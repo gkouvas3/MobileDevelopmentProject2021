@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,10 +40,15 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
     private FbInstaUSer fbInstaUser=null;
     private TwitterUser twitterUser=null;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_media_login);
+
+
+
         FacebookSdk.sdkInitialize(SocialMediaLoginActivity.this);
         twitterBtn = findViewById(R.id.twitterBtn);
         goToMenuBtn = findViewById(R.id.goToMenuButton);
@@ -116,78 +122,80 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
             }
         });
 
-        //Initialise Firebase
-        fbAuth = FirebaseAuth.getInstance();
+
+            //Initialise Firebase
+            fbAuth = FirebaseAuth.getInstance();
 
 
-        // Initialize Facebook Login button
-        mCallbackManager = CallbackManager.Factory.create();
-        loginButton = findViewById(R.id.login_button);
-        loginButton.setPermissions(Arrays.asList("user_birthday",
-                "user_hometown",
-                "user_location",
-                "user_likes",
-                "user_events",
-                "user_photos",
-                "user_videos",
-                "user_friends",
-                "user_status",
-                "user_tagged_places",
-                "user_posts",
-                "user_gender",
-                "user_link",
-                "user_age_range",
-                "email",
-                "read_insights",
-                "publish_video",
-                "catalog_management",
-                "create_audience_network_applications",
-                "user_managed_groups",
-                "groups_show_list",
-                "pages_manage_cta",
-                "pages_manage_instant_articles",
-                "pages_show_list",
-                "read_page_mailboxes",
-                "pages_messaging",
-                "pages_messaging_phone_number",
-                "pages_messaging_subscriptions",
-                "instagram_basic",
-                "instagram_manage_comments",
-                "instagram_manage_insights",
-                "publish_to_groups",
-                "groups_access_member_info",
-                "leads_retrieval",
-                "pages_read_engagement",
-                "pages_manage_metadata",
-                "pages_read_user_content",
-                "pages_manage_ads",
-                "pages_manage_posts",
-                "pages_manage_engagement"));
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                try {
-                    handleFacebookAccessToken(loginResult.getAccessToken());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            // Initialize Facebook Login button
+            mCallbackManager = CallbackManager.Factory.create();
+            loginButton = findViewById(R.id.login_button);
+            loginButton.setPermissions(Arrays.asList("user_birthday",
+                    "user_hometown",
+                    "user_location",
+                    "user_likes",
+                    "user_events",
+                    "user_photos",
+                    "user_videos",
+                    "user_friends",
+                    "user_status",
+                    "user_tagged_places",
+                    "user_posts",
+                    "user_gender",
+                    "user_link",
+                    "user_age_range",
+                    "email",
+                    "read_insights",
+                    "publish_video",
+                    "catalog_management",
+                    "create_audience_network_applications",
+                    "user_managed_groups",
+                    "groups_show_list",
+                    "pages_manage_cta",
+                    "pages_manage_instant_articles",
+                    "pages_show_list",
+                    "read_page_mailboxes",
+                    "pages_messaging",
+                    "pages_messaging_phone_number",
+                    "pages_messaging_subscriptions",
+                    "instagram_basic",
+                    "instagram_manage_comments",
+                    "instagram_manage_insights",
+                    "publish_to_groups",
+                    "groups_access_member_info",
+                    "leads_retrieval",
+                    "pages_read_engagement",
+                    "pages_manage_metadata",
+                    "pages_read_user_content",
+                    "pages_manage_ads",
+                    "pages_manage_posts",
+                    "pages_manage_engagement"));
+            loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                    try {
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-                // ...
-            }
+                @Override
+                public void onCancel() {
+                    Log.d(TAG, "facebook:onCancel");
+                    // ...
+                }
 
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                // ...
-            }
-        });
+                @Override
+                public void onError(FacebookException error) {
+                    Log.d(TAG, "facebook:onError", error);
+                    // ...
+                }
+            });
 
-    }
+        }
+
 
     @Override
     public void onStart() {

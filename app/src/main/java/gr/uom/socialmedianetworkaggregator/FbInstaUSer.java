@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenManager;
 import com.facebook.CallbackManager;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
@@ -31,6 +32,7 @@ public class FbInstaUSer {
     private String userName;
 
     private String facebookPageId;
+    private String facebookPageAccessToken;
 
 
 
@@ -128,6 +130,7 @@ public class FbInstaUSer {
 
                  try {
                      facebookPageId = response.getJSONObject().getJSONArray("data").getJSONObject(0).getString("id");
+                     facebookPageAccessToken=response.getJSONObject().getJSONArray("data").getJSONObject(0).getString("access_token");
 
                  } catch (JSONException e) {
                      e.printStackTrace();
@@ -146,7 +149,7 @@ public class FbInstaUSer {
                 );
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id");
+        parameters.putString("fields", "id,access_token");
         request.setParameters(parameters);
 
          Thread t = new Thread(new Runnable() {
@@ -160,6 +163,8 @@ public class FbInstaUSer {
          t.join();
 
     }
+
+
 
 
     public List<InstaPostEntry> getInstaPostsByHashtag(String hashtag) throws InterruptedException {
@@ -255,8 +260,61 @@ public class FbInstaUSer {
         return id[0];
     }
 
-    public void createFbPost(String description, String imageUri){
+    public void createFbPost(String description, String imageUrl){
 
+        if(description!=null&&imageUrl==null) {
+            Bundle params = new Bundle();
+            params.putString("message", description);
+            params.putString("access_token", facebookPageAccessToken);
+            /* make the API call */
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/" + facebookPageId + "/feed",
+                    params,
+                    HttpMethod.POST,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
+                            /* handle the result */
+                            Log.d(TAG, "response:" + response.toString());
+                        }
+                    }
+            ).executeAsync();
+        }else if(description==null){
+            Bundle params = new Bundle();
+            params.putString("url", imageUrl);
+            params.putString("access_token", facebookPageAccessToken);
+            /* make the API call */
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/" + facebookPageId + "/photos",
+                    params,
+                    HttpMethod.POST,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
+                            /* handle the result */
+                            Log.d(TAG, "response:" + response.toString());
+                        }
+                    }
+            ).executeAsync();
+        }else{
+            Bundle params = new Bundle();
+            params.putString("message",description);
+            params.putString("url", imageUrl);
+            params.putString("access_token", facebookPageAccessToken);
+            /* make the API call */
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/" + facebookPageId + "/photos",
+                    params,
+                    HttpMethod.POST,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
+                            /* handle the result */
+                            Log.d(TAG, "response:" + response.toString());
+                        }
+                    }
+            ).executeAsync();
+        }
     }
 
     public void createInstaPost(String description, String imageUri){
