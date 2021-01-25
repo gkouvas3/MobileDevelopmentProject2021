@@ -1,6 +1,12 @@
 package gr.uom.socialmedianetworkaggregator;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -13,6 +19,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.ShareStoryContent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -320,6 +328,23 @@ public class FbInstaUSer {
     public void createInstaPost(String description, String imageUri){
 
     }
+
+
+    public ShareStoryContent createFbStory(Drawable imageDrawable){
+        Bitmap image = ((BitmapDrawable)imageDrawable).getBitmap();
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .build();
+
+// Add to ShareStoryContent
+        ShareStoryContent content = new ShareStoryContent.Builder()
+                .setBackgroundAsset(photo)
+                .build();
+
+        return content;
+
+    }
+
 
 
 

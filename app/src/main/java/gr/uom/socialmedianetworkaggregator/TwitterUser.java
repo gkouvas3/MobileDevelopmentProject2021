@@ -1,5 +1,8 @@
 package gr.uom.socialmedianetworkaggregator;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Base64;
 import android.util.Log;
 
@@ -10,6 +13,7 @@ import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.OAuthCredential;
 import com.google.firebase.auth.OAuthProvider;
@@ -18,12 +22,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.Binarizer;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.common.BitArray;
+import com.google.zxing.common.BitMatrix;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -324,18 +335,21 @@ public class TwitterUser {
         return tweets;
     }
 
-    public void createPost(String description, String imageUri) throws UnsupportedEncodingException, GeneralSecurityException {
+    public void createPost(String description, String imageUrl) throws UnsupportedEncodingException, GeneralSecurityException {
         Log.d(TAG, "TwitterUser createPost");
-        if(description!=null){
+
 
             Log.d(TAG,"description is not null: "+description);
 
             String url = "https://api.twitter.com/1.1/statuses/update.json";
             Map<String, String> params = new HashMap<>();
-            params.put("status", description);
+            params.put("status", description+" "+imageUrl);
             String headerString=generateOauthHeaders("POST",url, params);
 
-            AndroidNetworking.post(url+"?status="+URLEncoder.encode(description,String.valueOf(StandardCharsets.UTF_8)))
+
+
+
+            AndroidNetworking.post(url+"?status="+URLEncoder.encode(description+" "+imageUrl,String.valueOf(StandardCharsets.UTF_8)))
                     .addHeaders("Authorization",headerString)
                     .build()
                     .getAsJSONObject(new JSONObjectRequestListener() {
@@ -349,7 +363,149 @@ public class TwitterUser {
                             Log.d(TAG, "Error while twitter createpost: "+anError.getErrorDetail()+" "+anError.getMessage());
                         }
                     });
-        }
+
+//        else{
+//            BitmapDrawable bitmapDrawable = (BitmapDrawable)image;
+//            Bitmap imageBitmap = bitmapDrawable.getBitmap();
+//
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+//            Log.d(TAG,"byte output stream size "+byteArrayOutputStream.size());
+//            byte[] byteArr = byteArrayOutputStream.toByteArray();
+//
+//            Log.d(TAG,"Media byte arr size : "+byteArr.length);
+//            Log.d(TAG,"Imagebitmap to string:"+imageBitmap.toString());
+//
+//
+//            String imageEncoded = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
+//
+//            String url = "https://upload.twitter.com/1.1/media/upload.json";
+//            Map<String, String> params = new HashMap<>();
+//           params.put("command", "INIT");
+//           params.put("total_bytes",""+byteArr.length);
+////            params.put("media_category","tweet_image");
+//            String headerString=generateOauthHeaders("POST",url, params);
+//
+//            Log.d(TAG, "Twitter image binary: "+imageEncoded);
+//            AndroidNetworking.post("https://upload.twitter.com/1.1/media/upload.json?command=INIT&total_bytes="+byteArr.length)
+//                    .addHeaders("Authorization", headerString)
+//                    .build()
+//                    .getAsJSONObject(new JSONObjectRequestListener() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            try {
+//                                String mediaId= response.getString("media_id_string");
+//
+//                                Log.d(TAG,"Got media id from twitter: "+mediaId);
+//
+//                                String url = "https://upload.twitter.com/1.1/media/upload.json";
+//                                Map<String, String> params = new HashMap<>();
+////                                params.put("command","APPEND");
+//////                                if(description==null)
+//////                                    params.put("status", "");
+//////                                else params.put("status",description);
+////                                params.put("media_id",mediaId);
+////                                params.put("segment_index","0");
+////                                //params.put("media_data",imageEncoded);
+//                                String headerString=generateOauthHeaders("POST",url, params);
+//
+//                                AndroidNetworking.post(url+"?command=APPEND"+"&media_id="+mediaId+"segment_index=0&media_data="+imageEncoded)
+//                                        .addHeaders("Authorization",headerString)
+//                                        .build()
+//                                        .getAsJSONObject(new JSONObjectRequestListener() {
+//                                            @Override
+//                                            public void onResponse(JSONObject response) {
+//                                                Log.d(TAG,"Successful append!");
+//
+//
+//                                                String url = "https://upload.twitter.com/1.1/media/upload.json";
+//                                                Map<String, String> params = new HashMap<>();
+//                                                params.put("command", "FINALIZE");
+//                                                params.put("media_id",mediaId);
+//                                                String headerString= null;
+//                                                try {
+//                                                    headerString = generateOauthHeaders("POST",url, params);
+//                                                } catch (UnsupportedEncodingException e) {
+//                                                    e.printStackTrace();
+//                                                } catch (GeneralSecurityException e) {
+//                                                    e.printStackTrace();
+//                                                }
+//
+//                                                AndroidNetworking.post(url+"?command=FINALIZE"+"&media_id="+mediaId)
+//                                                        .addHeaders("Authorization",headerString)
+//                                                        .build()
+//                                                        .getAsJSONObject(new JSONObjectRequestListener() {
+//                                                            @Override
+//                                                            public void onResponse(JSONObject response) {
+//                                                                Log.d(TAG,"Successful finalize!");
+//
+//                                                                String url = "https://api.twitter.com/1.1/statuses/update.json";
+//                                                                Map<String, String> params = new HashMap<>();
+//                                                                if(description==null) params.put("status","");
+//                                                                else params.put("status", description);
+//                                                                params.put("media_ids",mediaId);
+//                                                                String headerString= null;
+//                                                                try {
+//                                                                    headerString = generateOauthHeaders("POST",url, params);
+//                                                                } catch (UnsupportedEncodingException e) {
+//                                                                    e.printStackTrace();
+//                                                                } catch (GeneralSecurityException e) {
+//                                                                    e.printStackTrace();
+//                                                                }
+//
+//                                                                try {
+//                                                                    AndroidNetworking.post(url+"?status="+URLEncoder.encode(description,String.valueOf(StandardCharsets.UTF_8))+"&media_ids="+mediaId)
+//                                                                            .addHeaders("Authorization",headerString)
+//                                                                            .build()
+//                                                                            .getAsJSONObject(new JSONObjectRequestListener() {
+//                                                                                @Override
+//                                                                                public void onResponse(JSONObject response) {
+//                                                                                    Log.d(TAG,"Successful tweet!");
+//                                                                                }
+//
+//                                                                                @Override
+//                                                                                public void onError(ANError anError) {
+//                                                                                    Log.d(TAG, "Error while twitter createpost: "+anError.getErrorDetail()+" "+anError.getMessage());
+//                                                                                }
+//                                                                            });
+//                                                                } catch (UnsupportedEncodingException e) {
+//                                                                    e.printStackTrace();
+//                                                                }
+//
+//
+//                                                            }
+//
+//                                                            @Override
+//                                                            public void onError(ANError anError) {
+//                                                                Log.d(TAG, "Error on media finalize: "+anError.getErrorDetail()+" "+anError.getMessage() +anError.getResponse());
+//                                                            }
+//                                                        });
+//
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void onError(ANError anError) {
+//                                                Log.d(TAG, "Error on media append: "+anError.getErrorDetail()+" "+anError.getMessage() +anError.getResponse());
+//                                            }
+//                                        });
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            } catch (UnsupportedEncodingException e) {
+//                                e.printStackTrace();
+//                            } catch (GeneralSecurityException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//
+//                        @Override
+//                        public void onError(ANError anError) {
+//                            Log.d(TAG, "Error getting media id: "+anError.getErrorDetail()+" "+anError.getMessage()+" "+anError.getErrorCode()+" "+anError.getErrorBody());
+//
+//                        }
+//                    });
+//        }
 
 
     }

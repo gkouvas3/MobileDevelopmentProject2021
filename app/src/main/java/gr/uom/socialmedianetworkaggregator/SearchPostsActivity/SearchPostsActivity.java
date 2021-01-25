@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
 import android.widget.SearchView;
 
 import gr.uom.socialmedianetworkaggregator.R;
@@ -63,6 +64,8 @@ public class SearchPostsActivity extends AppCompatActivity {
         hashtagsSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                replaceFragments(ViewPostsFragment.class, query);
+
                 return false;
             }
 

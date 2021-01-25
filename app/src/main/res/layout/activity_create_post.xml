@@ -7,7 +7,7 @@
     tools:context=".CreatePostActivity">
 
     <Button
-        android:id="@+id/uploadAnImageButton"
+        android:id="@+id/uploadImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,13 +17,14 @@
         app:layout_constraintTop_toBottomOf="@+id/uploadImageView" />
 
 
-
     <ImageView
         android:id="@+id/uploadImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="450dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createPostTextView"
         tools:srcCompat="@tools:sample/avatars" />
@@ -52,7 +53,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadAnImageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/uploadImageButton" />
 
     <CheckBox
         android:id="@+id/twitterCheckBox"
@@ -98,7 +99,7 @@
         app:layout_constraintTop_toBottomOf="@+id/descriptionEditText" />
 
     <Button
-        android:id="@+id/uploadPostButton"
+        android:id="@+id/uploadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -108,13 +109,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/facebookCheckBox" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadPostButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

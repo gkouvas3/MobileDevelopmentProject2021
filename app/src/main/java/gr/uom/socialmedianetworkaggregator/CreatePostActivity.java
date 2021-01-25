@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,13 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.share.Share;
-import com.facebook.share.internal.ShareFeedContent;
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.model.ShareMedia;
-import com.facebook.share.model.ShareMediaContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -49,7 +41,9 @@ public class CreatePostActivity extends AppCompatActivity {
     private EditText descriptionText;
     private Button createPostButton;
 
+    private Uri imageUri;
     private Uri downloadUrl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +58,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
         descriptionText=findViewById(R.id.descriptionEditText);
 
-        createPostButton=findViewById(R.id.uploadPostButton);
-        uploadImageButton = findViewById(R.id.uploadAnImageButton);
+        createPostButton=findViewById(R.id.uploadButton);
+        uploadImageButton = findViewById(R.id.uploadImageButton);
 
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,8 +82,11 @@ public class CreatePostActivity extends AppCompatActivity {
                     if(twitterCheckBox.isChecked()){
                         Log.d(TAG, "twitterCheckBox is checked");
                         try {
-                            if(uploadImageView.getDrawable()==null)
-                                AppUser.getTwitterUser().createPost(descriptionText.getText().toString(), "");
+                            if(uploadImageView.getDrawable()==null){
+                                AppUser.getTwitterUser().createPost(descriptionText.getText().toString(), null);
+                            }else if(descriptionText.getText()!=null){
+                                AppUser.getTwitterUser().createPost(descriptionText.getText().toString(),downloadUrl.toString());
+                            }else AppUser.getTwitterUser().createPost(null,downloadUrl.toString());
                         } catch (UnsupportedEncodingException e) {
                             Log.d(TAG,e.toString());
                         } catch (GeneralSecurityException e) {
@@ -101,10 +98,43 @@ public class CreatePostActivity extends AppCompatActivity {
                             AppUser.getFbInstaUSer().createFbPost(descriptionText.getText().toString(), null);
                         }else if(descriptionText.getText()==null){
                             AppUser.getFbInstaUSer().createFbPost(null,downloadUrl.toString());
+
                         }else AppUser.getFbInstaUSer().createFbPost(descriptionText.getText().toString(),downloadUrl.toString());
                     }
                     if(instagramCheckBox.isChecked()){
-                        AppUser.getFbInstaUSer().createInstaPost(descriptionText.getText().toString(), uploadImageView.getTag().toString());
+                        if(uploadImageView.getDrawable()!=null) {
+//                        AppUser.getFbInstaUSer().createInstaPost(imageUri);
+                            Intent share = new Intent(Intent.ACTION_SEND);
+
+                            // Set the MIME type
+                            share.setType("image/*");
+
+                            // Add the URI to the Intent.
+                           share.putExtra(Intent.EXTRA_STREAM, imageUri);
+                           share.setPackage("com.instagram.android");
+
+                            // Broadcast the Intent.
+                            startActivity(Intent.createChooser(share, "Share to"));
+
+
+
+                            //THE FOLLOWING SHOULD WORK, BUT THEY'RE NOT :'(
+
+//                            String sourceApplication = "gr.uom.socialmedianetworkaggregator";
+//
+//// Instantiate implicit intent with ADD_TO_STORY action and background asset
+//                            Intent intent = new Intent("com.instagram.share.ADD_TO_FEED");
+//                            intent.putExtra("source_application",sourceApplication);
+//
+//                            intent.setDataAndType(imageUri, "image/jpeg");
+//                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//
+//
+//                            startActivityForResult(intent, 0);
+                        }else{
+                            Toast.makeText(CreatePostActivity.this, "Cannot post to instagram without image!", Toast.LENGTH_SHORT);
+                        }
                     }
 
                 }else{
@@ -125,9 +155,9 @@ public class CreatePostActivity extends AppCompatActivity {
             try {
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 //                StorageReference userReference = storageReference.child()
-                final Uri imageUri = data.getData();
+                imageUri = data.getData();
 
-                StorageReference userReference = storageReference.child("images/"+imageUri.getLastPathSegment());
+                StorageReference userReference = storageReference.child("images/posts/"+imageUri.getLastPathSegment());
                 UploadTask uploadTask;
                 uploadTask=userReference.putFile(imageUri);
                 uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -154,6 +184,8 @@ public class CreatePostActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
                                 downloadUrl=uri;
+
+
                             }
                         });
                     }
