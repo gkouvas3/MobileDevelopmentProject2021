@@ -80,14 +80,5 @@ public class hashtagsListFragment extends Fragment {
             return this.view;
         }
 
-    public void loadFragment() {
-        Fragment fragment=this;
-// create a FragmentManager
-        FragmentManager fm = getFragmentManager();
-// create a FragmentTransaction to begin the transaction and replace the Fragment
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-// replace the FrameLayout with new Fragment
-        fragmentTransaction.replace(R.id.searchPostsFrameLayout, fragment);
-        fragmentTransaction.commit(); // save the changes
-    }
+
 }

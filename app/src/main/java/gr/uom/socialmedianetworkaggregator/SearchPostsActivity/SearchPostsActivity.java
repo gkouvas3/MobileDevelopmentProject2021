@@ -35,32 +35,7 @@ public class SearchPostsActivity extends AppCompatActivity {
 
 
         hashtagsSearchView=findViewById(R.id.hashtagsSearchView);
-        //(new hashtagsListFragment()).loadFragment();
-//        hashtagsListView=findViewById(R.id.hashatgsListView);
 
-/*
-        try {
-            trendingHashtags = AppUser.getTwitterUser().getTrendingHashtags();
-            Log.d(TAG, "Trending hashtags: " + trendingHashtags.toString());
-
-
-        } catch (IOException | JSONException | GeneralSecurityException e) {
-            e.printStackTrace();
-        }
-*//*
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.hashtags_list_item,trendingHashtags);
-        hashtagsListView.setAdapter(adapter);
-
-        hashtagsListView.setClickable(true);
-        hashtagsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG,"OnItemClicked");
-                getSupportFragmentManager().beginTransaction().replace(R.id.searchPostsFrameLayout,new ViewPostsFragment()).commit();
-            }
-        });
-
-*/
         hashtagsSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

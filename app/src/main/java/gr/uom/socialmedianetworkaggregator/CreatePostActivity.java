@@ -103,7 +103,6 @@ public class CreatePostActivity extends AppCompatActivity {
                     }
                     if(instagramCheckBox.isChecked()){
                         if(uploadImageView.getDrawable()!=null) {
-//                        AppUser.getFbInstaUSer().createInstaPost(imageUri);
                             Intent share = new Intent(Intent.ACTION_SEND);
 
                             // Set the MIME type
@@ -154,7 +153,6 @@ public class CreatePostActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             try {
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-//                StorageReference userReference = storageReference.child()
                 imageUri = data.getData();
 
                 StorageReference userReference = storageReference.child("images/posts/"+imageUri.getLastPathSegment());

@@ -130,6 +130,7 @@ public class SocialMediaLoginActivity extends AppCompatActivity {
             // Initialize Facebook Login button
             mCallbackManager = CallbackManager.Factory.create();
             loginButton = findViewById(R.id.login_button);
+            //just added all the permissions manually here
             loginButton.setPermissions(Arrays.asList("user_birthday",
                     "user_hometown",
                     "user_location",

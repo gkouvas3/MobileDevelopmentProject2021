@@ -33,7 +33,6 @@ public class ViewPostsFragment extends Fragment {
     private List<InstaPostEntry> instaPosts;
     private ListView postsListView;
     private View view;
-    //private EditText hashtagEditText;
 
     @Override
     public View onCreateView( LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
@@ -45,9 +44,7 @@ public class ViewPostsFragment extends Fragment {
 
         postsListView=this.view.findViewById(R.id.postsListView);
 
-//        hashtagEditText =this.view.findViewById(R.id.hashtagEditText);
-//        hashtagEditText.setVisibility(View.VISIBLE);
-//        hashtagEditText.setText(hashtagText);
+
 
         try {
 
@@ -73,7 +70,6 @@ public class ViewPostsFragment extends Fragment {
         List<PostsListEntry> postsList = new ArrayList<PostsListEntry>();
 
         for(TwitterPostEntry tweet : tweets){
-            //Log.d(TAG,"Tweet "+url);
             postsList.add(new TwitterPostEntry(tweet.getUsername(), tweet.getDescription(), tweet.getUrl()));
         }
 
@@ -100,17 +96,6 @@ public class ViewPostsFragment extends Fragment {
         return this.view;
     }
 
-
-//    public void loadFragment() {
-//        Fragment fragment=this;
-//// create a FragmentManager
-//        FragmentManager fm = getFragmentManager();
-//// create a FragmentTransaction to begin the transaction and replace the Fragment
-//        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-//// replace the FrameLayout with new Fragment
-//        fragmentTransaction.replace(R.id.searchPostsFrameLayout, fragment);
-//        fragmentTransaction.commit(); // save the changes
-//    }
 
 
 }

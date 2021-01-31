@@ -325,9 +325,7 @@ public class FbInstaUSer {
         }
     }
 
-    public void createInstaPost(String description, String imageUri){
 
-    }
 
 
     public ShareStoryContent createFbStory(Drawable imageDrawable){

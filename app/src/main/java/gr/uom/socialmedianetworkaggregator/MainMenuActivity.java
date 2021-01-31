@@ -18,7 +18,6 @@ public class MainMenuActivity extends AppCompatActivity {
     private Button searchPostsButton;
     private Button createPostButton;
     private Button createStoryButton;
-    private Button logOutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,7 @@ public class MainMenuActivity extends AppCompatActivity {
         searchPostsButton = findViewById(R.id.searchPostsButton);
         createPostButton = findViewById(R.id.createPostButton);
         createStoryButton = findViewById(R.id.createStoryButton);
-        logOutButton = findViewById(R.id.logOutButton);
+
 
         searchPostsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,13 +57,7 @@ public class MainMenuActivity extends AppCompatActivity {
             }
         });
 
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainMenuActivity.this, LogOutActivity.class);
-                startActivity(intent);
-            }
-        });
+
 
 
 
